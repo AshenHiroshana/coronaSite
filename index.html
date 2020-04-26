@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        .correct {
+            background-color: lightgreen;
+        }
+
+        .incorrect {
+            background-color: brown;
+        }
+    </style>
     <script>
         window.addEventListener("load", initialize);
         answerArray = new Array();
@@ -53,7 +62,8 @@
                     
 
                     var label = document.createElement("label");
-                    label.setAttribute("for",qno);
+                    label.setAttribute("for",qno+""+k);
+                    label.setAttribute("id",qno+"L"+k);
                     if(k==no){
                         label.innerHTML = question["correct_answer"];
                         input.setAttribute("value",question["correct_answer"]);
@@ -112,8 +122,10 @@
                 PF = "  /  Fail";
             }
             alert(marks+""+PF);
+            clearF();
         }
         function reviewF(){
+            clearF();
            
             for(i=0;i<10;i++){
                 var qno = i+1;
@@ -121,6 +133,13 @@
                 for(var k = 0 ; k < 4 ; k++){
                     if(document.getElementById(qno+""+k).value==answerArray[i]){
                         document.getElementById(qno+""+k).checked=true;
+                        if(answerArray[i]!=0 && answerArray[i]==questionarray[i]["correct_answer"]){
+                            document.getElementById(qno+""+k).classList.add("correct");
+                            document.getElementById(qno+"L"+k).classList.add("correct");
+                        }else if(answerArray[i]!=0 && answerArray[i]!=questionarray[i]["correct_answer"]){
+                            document.getElementById(qno+""+k).classList.add("incorrect");
+                            document.getElementById(qno+"L"+k).classList.add("incorrect");
+                        }
                         break labelmark2;
                     }
                 }
@@ -134,6 +153,8 @@
                for(var k = 0 ; k < 4 ; k++){
 
                    var anserinput = document.getElementById(qno+""+k).checked=false;
+                   document.getElementById(qno+""+k).classList.remove("correct","incorrect");
+                   document.getElementById(qno+"L"+k).classList.remove("correct","incorrect");
                }
 
            }
