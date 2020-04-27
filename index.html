@@ -17,7 +17,7 @@
         window.addEventListener("load", initialize);
         answerArray = new Array();
         function initialize() {
- 
+            disableButtons(true, true, true);
             var ajaxStudent = new XMLHttpRequest();
             ajaxStudent.open("get", "https://opentdb.com/api.php?amount=10&category=18&difficulty=medium&type=multiple", false);
             ajaxStudent.send();
@@ -59,6 +59,7 @@
                     input.setAttribute("type","radio");
                     input.setAttribute("id",qno+""+k);
                     input.setAttribute("name",qno);
+                    input.setAttribute("onclick","disableButtons(false, false, true)");
                     
 
                     var label = document.createElement("label");
@@ -123,6 +124,7 @@
             }
             alert(marks+""+PF);
             clearF();
+            disableButtons(true, true, false);
         }
         function reviewF(){
             clearF();
@@ -145,6 +147,7 @@
                 }
 
             }
+            disableButtons(false, false, true);
         }
         function clearF(){
            
@@ -158,15 +161,43 @@
                }
 
            }
+           if(answerArray.length!=0){
+                disableButtons(true, true, false);
+           }else{
+                disableButtons(true, true, true);
+           }
+           
+           
        }
+
+        function disableButtons(submit, clear, review) {
+
+            if (submit) {
+                btnSubmit.setAttribute("disabled", "disabled");
+            } else {
+                btnSubmit.removeAttribute("disabled");
+            }
+
+            if (clear) {
+                btnClear.setAttribute("disabled", "disabled");
+            } else {
+                btnClear.removeAttribute("disabled");
+            }
+
+            if (review) {
+                btnReview.setAttribute("disabled", "disabled");
+            } else {
+                btnReview.removeAttribute("disabled");
+            }
+        }
     </script>
 </head>
 <body>
     <div id="qbox">
 
     </div>
-    <input type="button" value="Submit" onclick="submitF()"/>
-    <input type="button" value="Claer" onclick="clearF()"/>
-    <input type="button" value="Review" onclick="reviewF()"/>
+    <input id="btnSubmit" type="button" value="Submit" onclick="submitF()"/>
+    <input id="btnClear" type="button" value="Claer" onclick="clearF()"/>
+    <input id="btnReview" type="button" value="Review" onclick="reviewF()"/>
 </body>
 </html>
