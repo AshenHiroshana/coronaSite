@@ -142,12 +142,19 @@
                             document.getElementById(qno+""+k).classList.add("incorrect");
                             document.getElementById(qno+"L"+k).classList.add("incorrect");
                         }
-                        break labelmark2;
+                        
+                        //break labelmark2;
                     }
+                    if(document.getElementById(qno+""+k).value==questionarray[i]["correct_answer"]){
+                        document.getElementById(qno+""+k).classList.add("correct");
+                        document.getElementById(qno+"L"+k).classList.add("correct");
+                    }
+                    document.getElementById(qno+""+k).setAttribute("disabled", "disabled");
+
                 }
 
             }
-            disableButtons(false, false, true);
+            disableButtons(true, false, true);
         }
         function clearF(){
            
@@ -190,6 +197,9 @@
                 btnReview.removeAttribute("disabled");
             }
         }
+        function NewQuestions(){
+            location.reload();
+        }
     </script>
 </head>
 <body>
@@ -198,6 +208,8 @@
     </div>
     <input id="btnSubmit" type="button" value="Submit" onclick="submitF()"/>
     <input id="btnClear" type="button" value="Claer" onclick="clearF()"/>
-    <input id="btnReview" type="button" value="Review" onclick="reviewF()"/>
+    <input id="btnReview" type="button" value="Review" onclick="reviewF()"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <input id="btnNewQ" type="button" value="Request New Questions" onclick="NewQuestions()"/>
+
 </body>
 </html>
