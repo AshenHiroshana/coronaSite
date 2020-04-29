@@ -87,7 +87,7 @@
                     var canvasActualHeight = this.canvas.height - this.options.padding * 2;
                     var canvasActualWidth = this.canvas.width - this.options.padding * 2;
             
-                    //drawing the grid lines
+                   
                     var gridValue = 0;
                     while (gridValue <= maxValue){
                         var gridY = canvasActualHeight * (1 - gridValue/maxValue) + this.options.padding;
@@ -100,7 +100,7 @@
                             this.options.gridColor
                         );
                         
-                        //writing grid markers
+                       
                         this.ctx.save();
                         this.ctx.fillStyle = this.options.gridColor;
                         this.ctx.font = "bold 10px Arial";
@@ -109,8 +109,7 @@
             
                         gridValue+=this.options.gridScale;
                     }
-            
-                    //drawing the bars
+
                     var barIndex = 0;
                     var numberOfBars = Object.keys(this.options.data).length;
                     var barSize = (canvasActualWidth)/numberOfBars;
