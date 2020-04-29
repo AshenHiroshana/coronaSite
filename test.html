@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+       p{
+            transform: rotate(50deg);
+        }
+    </style>
+    <script>
+   window.addEventListener("load", initialize);
+        answerArray = new Array();
+        today = new Date();
+        function initialize() {
+            document.getElementById("headh").innerHTML = " Total confirmed COVID-19 cases in Sri Lanka now at : "+(today.getFullYear()+"-"+(today.getMonth()+1)+"-"+today.getDate())
+            var ajaxStudent = new XMLHttpRequest();
+            ajaxStudent.open("get", "https://api.covid19api.com/country/sri-lanka/status/confirmed/live?from=2020-04-"+(today.getDate()-15)+"T00:00:00Z&to=2020-04-"+(today.getDate()-1)+"T00:00:00Z", false);
+            ajaxStudent.send();
+            coviddata = JSON.parse(ajaxStudent.responseText);
+            console.log(coviddata);  
+            fill();
+        }
+        function fill() {
+            dataarray = new Array();
+            datearray = new Array();
+            
+            for(i=1;i<coviddata.length;i++){
+                date = new Date(coviddata[i]["Date"]);
+                datearray.push(date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate());
+                
+                    dataarray.push(coviddata[i]["Cases"]-coviddata[i-1]["Cases"]);
+                
+                
+
+               }  
+
+
+                    var myCanvas = document.getElementById("myCanvas");
+                    myCanvas.width = 900;
+                    myCanvas.height = 500;
+                    
+                    var ctx = myCanvas.getContext("2d");
+
+                    function drawLine(ctx, startX, startY, endX, endY,color){
+                        ctx.save();
+                        ctx.strokeStyle = color;
+                        ctx.beginPath();
+                        ctx.moveTo(startX,startY);
+                        ctx.lineTo(endX,endY);
+                        ctx.stroke();
+                        ctx.restore();
+                    }
+                    x=1;
+                    function drawBar(ctx, upperLeftCornerX, upperLeftCornerY, width, height,color){
+                    
+                        ctx.save();
+                        ctx.fillStyle=color;
+                        ctx.fillRect(upperLeftCornerX,upperLeftCornerY,width,height);
+                        ctx.font = "10pt sans-serif";
+                                if(x==0){
+                                    ctx.fillText(coviddata[x]["Cases"]-coviddata[x-1]["Cases"], upperLeftCornerX+20, 500-height);
+                                }else{
+                                    ctx.fillText(coviddata[x]["Cases"]-coviddata[x-1]["Cases"], upperLeftCornerX+20, 500-height);
+                                }
+                           
+                            ctx.fillStyle = "black";
+                        
+                        x++
+                        ctx.restore();
+                    }
+
+                    
+
+                var Barchart = function(options){
+                this.options = options;
+                this.canvas = options.canvas;
+                this.ctx = this.canvas.getContext("2d");
+                this.colors = options.colors;
+            
+                this.draw = function(){
+                    var maxValue = 0;
+                    for (var categ in this.options.data){
+                        maxValue = Math.max(maxValue,this.options.data[categ])+10;
+                    }
+                    var canvasActualHeight = this.canvas.height - this.options.padding * 2;
+                    var canvasActualWidth = this.canvas.width - this.options.padding * 2;
+            
+                    //drawing the grid lines
+                    var gridValue = 0;
+                    while (gridValue <= maxValue){
+                        var gridY = canvasActualHeight * (1 - gridValue/maxValue) + this.options.padding;
+                        drawLine(
+                            this.ctx,
+                            0,
+                            gridY,
+                            this.canvas.width,
+                            gridY,
+                            this.options.gridColor
+                        );
+                        
+                        //writing grid markers
+                        this.ctx.save();
+                        this.ctx.fillStyle = this.options.gridColor;
+                        this.ctx.font = "bold 10px Arial";
+                        //this.ctx.fillText(gridValue, 0,gridY - 2);
+                        this.ctx.restore();
+            
+                        gridValue+=this.options.gridScale;
+                    }
+            
+                    //drawing the bars
+                    var barIndex = 0;
+                    var numberOfBars = Object.keys(this.options.data).length;
+                    var barSize = (canvasActualWidth)/numberOfBars;
+                        
+                        for (categ in this.options.data){
+                        var val = this.options.data[categ];
+                        var barHeight = Math.round( canvasActualHeight * val/maxValue) ;
+                        drawBar(
+                            this.ctx,
+                            this.options.padding + barIndex * barSize,
+                            this.canvas.height - barHeight - this.options.padding,
+                            barSize,
+                            barHeight+5,
+                            this.colors[barIndex%this.colors.length]
+                        );
+            
+                        barIndex++;
+                    }
+            
+                }
+            }
+
+            var myBarchart = new Barchart(
+                {
+                    canvas:myCanvas,
+                    padding:3,
+                    gridScale:10,
+                    gridColor:"#cccccc",
+                    data:dataarray,
+                    colors:["#CB4335","#A569BD", "#5DADE2","#48C9B0","#186A3B","#F4D03F", "#E67E22","#979A9A","#283747","#641E16","#4A235A","#7E5109","#145A32","#D4AC0D"]
+                }
+            );
+            myBarchart.draw(); 
+
+            
+                var h5list = document.getElementsByTagName("p");
+                for (var index = 0; index < h5list.length; index++) {
+                    const element = h5list[index];
+                    element.innerHTML = datearray[index];
+            }
+            document.getElementById("tod").innerHTML = today.getFullYear()+"-"+(today.getMonth()+1)+"-"+(today.getDate()-1);
+
+        }
+        
+    </script>
+</head>
+<body>
+    <h1 id="headh" style="margin-left: 200px;"></h1>
+    <div style="margin-left: 200px; margin-top: 20px;">
+        <canvas id="myCanvas"></canvas>
+    </div>
+   
+    <h3 style="margin-left: 180px; margin-top: -420px;">c<br>o<br>n<br>f<br>i<br>r<br>m<br>e<br>d<br><br><br> c<br>a<br>s<br>e<br>s</h3>
+    
+    <p style="margin-left: -20px; margin-top: 580px;"></p>
+    <p style="margin-left: 60px; margin-top: -65px;"></p>
+    <p style="margin-left: 140px; margin-top: -65px;"></p>
+    <p style="margin-left: 220px; margin-top: -65px;"></p>
+    <p style="margin-left: 300px; margin-top: -65px;"></p>
+    <p style="margin-left: 380px; margin-top: -65px;"></p>
+    <p style="margin-left: 460px; margin-top: -65px;"></p>
+    <p style="margin-left: 530px; margin-top: -62px;"></p>
+    <p style="margin-left: 610px; margin-top: -62px;"></p>
+    <p style="margin-left: 680px; margin-top: -62px;"></p>
+    <p style="margin-left: 760px; margin-top: -65px;"></p>
+    <p style="margin-left: 840px; margin-top: -65px;"></p>
+    <p style="margin-left: 920px; margin-top: -65px;"></p>
+    <p id="tod" style="margin-left: 990px; margin-top: -60px;"></p>
+  
+
+</body>
+</html>
